@@ -219,6 +219,7 @@ function getCoins(coin,character){
   if( character.overlap(coin) && character.live && coin.get==false){
     character.coins+=1;
     coin.get=true;
+    coin_collect.play();
   };
 }
     
@@ -285,13 +286,13 @@ function autoControl(character){
 function manualControl(character){
   
   if(character.live){
-    if(noseX<400){
+    if(noseX>400){
       character.velocity.x-=gameConfig.moveSpeed;
       character.changeAnimation('move');
       character.mirrorX(-1);
     }
 
-    if(noseX>400){
+    if(noseX<400){
       character.velocity.x+=gameConfig.moveSpeed;
       character.changeAnimation('move');
       character.mirrorX(1);
@@ -307,7 +308,8 @@ function manualControl(character){
 /* Movements of character */
 function jumping(character){
 	if( ( noseY<200 &&character.live) || (touchIsDown&&character.live) ){
-		character.velocity.y+=gameConfig.jump;
+		mario_jump.play();
+    character.velocity.y+=gameConfig.jump;
 	}
 }
 
@@ -356,6 +358,7 @@ function StepOnEnemy(obj1,obj2){
 	if(obj1_Right>=obj2_Left&&obj1_Left<=obj2_Right && obj1_Down<=obj2_Up+7 && obj1_Down>=obj2_Up-7 && obj2.live==true && obj2.touching.top){
 		obj2.live=false;
     obj1.killing=30;
+    kick_sound.play();
     obj1.kills++;
     if(obj1.velocity.y>=gameConfig.jump*0.8){
       obj1.velocity.y=gameConfig.jump*0.8;
@@ -374,6 +377,9 @@ function die(character){
     character.status="dead";
     character.changeAnimation('dead');
     character.velocity.y-=2;
+    if(character.liveNumber>0){
+      mariodie_sound.play();
+    }
 }
 
 // check character status and response to sprite and game status
@@ -385,6 +391,7 @@ function checkStatus(character){
   }
   if(character.live==false && character.liveNumber==0){
     gameConfig.status="gameover"
+    gameover_sound.play();
   }
 
 }
